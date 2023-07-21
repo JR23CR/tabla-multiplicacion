@@ -116,7 +116,7 @@
         if (largoCorto === 'largo') {
           totalFinal = sumaCasilla3 * grosor;
         } else {
-          totalFinal = sumaCasilla3 / 4;
+          totalFinal = (sumaCasilla3 * grosor) / 4; // Multiplicar la suma por el grosor y luego dividir entre 4
         }
 
         document.getElementById("sumaCasilla2").textContent = sumaCasilla2;
