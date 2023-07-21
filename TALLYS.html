@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabla de multiplicacion</title>
+  <style>
+    /* Estilos para los cuadros de las casillas */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: center;
+      padding: 8px;
+    }
+
+    /* Estilo para resaltar casilla al enfocar */
+    input[type="number"]:focus {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tabla de multiplicacion</h1>
+  <p>Es Largo o Corto: 
+    <select id="largoCorto" onchange="calcularTotal()">
+      <option value="largo">Largo</option>
+      <option value="corto">Corto</option>
+    </select>
+  </p>
+  <p>Grosor: <input type="number" id="grosor" onkeyup="checkEnter(event)" onchange="calcularTotal()"></p>
+  <table>
+    <thead>
+      <tr>
+        <th>PT</th>
+        <th>Piezas Totales</th>
+        <th>Suma total</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-cuerpo">
+      <!-- Aquí se generará la tabla dinámicamente -->
+    </tbody>
+  </table>
+  <p style="font-size: 18px;">Piezas totales: <span id="sumaCasilla2"></span></p>
+  <p style="font-size: 18px;">Suma total: <span id="sumaCasilla3" style="font-size: 18px;"></span></p>
+  <p style="font-size: 24px;">TOTALES DE PIES TABLARES: <span id="totalFinal"></span></p>
+  <button onclick="mostrarResumen()">Ver Resumen</button> <!-- Nuevo botón para ver el resumen -->
+  <button onclick="guardarTabla()">Guardar Tabla</button>
+  <hr>
+  <h2>Resumen de Tablas</h2>
+  <ul id="resumen-tablas">
+    <!-- Aquí se mostrará el resumen por fechas -->
+  </ul>
+
+  <script>
+    function generarTabla() {
+      var tablaCuerpo = document.getElementById("tabla-cuerpo");
+      tablaCuerpo.innerHTML = '';
+
+      for (var i = 1; i <= 20; i++) {
+        var fila = document.createElement("tr");
+        var casilla1 = document.createElement("td");
+        var casilla2 = document.createElement("td");
+        var casilla3 = document.createElement("td");
+
+        casilla1.textContent = i;
+        casilla2.innerHTML = '<input type="number" onkeyup="checkEnter(event)" onchange="calcularTotal()">';
+        casilla3.textContent = '';
+
+        fila.appendChild(casilla1);
+        fila.appendChild(casilla2);
+        fila.appendChild(casilla3);
+
+        tablaCuerpo.appendChild(fila);
+      }
+    }
+
+    function calcularTabla() {
+      var tablaCuerpo = document.getElementById("tabla-cuerpo");
+      var filas = tablaCuerpo.getElementsByTagName("tr");
+      var grosor = parseFloat(document.getElementById("grosor").value);
+      var sumaCasilla2 = 0;
+      var sumaCasilla3 = 0;
+
+      for (var i = 0; i < filas.length; i++) {
+        var fila = filas[i];
+        var casillas = fila.getElementsByTagName("td");
+        var numeroFila1 = parseInt(casillas[0].textContent);
+        var numeroFila2 = parseFloat(casillas[1].getElementsByTagName("input")[0].value);
+
+        if (!isNaN(numeroFila2)) {
+          var resultado = numeroFila1 * numeroFila2;
+          casillas[2].textContent = resultado;
+          sumaCasilla2 += numeroFila2;
+          sumaCasilla3 += resultado;
+        } else {
+          casillas[2].textContent = '';
+        }
+      }
+
+      return [sumaCasilla2, sumaCasilla3];
+    }
+
+    function calcularTotal() {
+      var grosor = parseFloat(document.getElementById("grosor").value);
+      var largoCorto = document.getElementById("largoCorto").value;
+
+      if (!isNaN(grosor)) {
+        var sumas = calcularTabla();
+        var sumaCasilla2 = sumas[0];
+        var sumaCasilla3 = sumas[1];
+        var totalFinal;
+
+        if (largoCorto === 'largo') {
+          totalFinal = sumaCasilla3 * grosor;
+        } else {
+          totalFinal = sumaCasilla3 / 4;
+        }
+
+        document.getElementById("sumaCasilla2").textContent = sumaCasilla2;
+        document.getElementById("sumaCasilla3").textContent = sumaCasilla3;
+        document.getElementById("totalFinal").textContent = totalFinal.toFixed(2);
+      } else {
+        document.getElementById("sumaCasilla2").textContent = '';
+        document.getElementById("sumaCasilla3").textContent = '';
+        document.getElementById("totalFinal").textContent = '';
+      }
+    }
+
+    function checkEnter(event) {
+      if (event.keyCode === 13) {
+        event.preventDefault();
+        var inputElements = document.getElementsByTagName("input");
+        var currentIndex = Array.prototype.indexOf.call(inputElements, event.target);
+        var nextIndex = currentIndex + 1;
+        if (nextIndex < inputElements.length) {
+          inputElements[nextIndex].focus();
+        }
+      }
+    }
+
+    function guardarTabla() {
+      var tablaCuerpo = document.getElementById("tabla-cuerpo");
+      var filas = tablaCuerpo.getElementsByTagName("tr");
+
+      var tablaGuardada = [];
+      for (var i = 0; i < filas.length; i++) {
+        var fila = filas[i];
+        var casillas = fila.getElementsByTagName("td");
+        var numeroFila1 = parseInt(casillas[0].textContent);
+        var numeroFila2 = parseFloat(casillas[1].getElementsByTagName("input")[0].value);
+
+        if (!isNaN(numeroFila2)) {
+          var resultado = numeroFila1 * numeroFila2;
+          tablaGuardada.push({ fecha: new Date().toISOString(), numeroFila1, numeroFila2, resultado });
+        }
+      }
+
+      var tablasGuardadas = JSON.parse(localStorage.getItem("tablas")) || [];
+      tablasGuardadas.push(tablaGuardada);
+
+      localStorage.setItem("tablas", JSON.stringify(tablasGuardadas));
+      alert("Tabla guardada exitosamente!");
+
+      // Actualizar el resumen
+      mostrarResumen();
+    }
+
+    function mostrarResumen() {
+      var resumenTablasElement = document.getElementById("resumen-tablas");
+      resumenTablasElement.innerHTML = '';
+
+      var Guardadas = JSON.parse(localStorage.getItem("tablas")) || [];
+
+      var fechas = [];
+      Guardadas.forEach(function(tabla) {
+        var fecha = tabla[0].fecha.slice(0, 10);
+        var resultadoTotal = tabla.reduce((total, item) => total + item.resultado, 0);
+
+        var listItem = document.createElement("li");
+        listItem.textContent = `Fecha: ${fecha}, Total: ${resultadoTotal}`;
+        resumenTablasElement.appendChild(listItem);
+      });
+    }
+
+    generarTabla();
+    mostrarResumen();
+  </script>
+</body>
+</html>

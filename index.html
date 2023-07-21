@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabla de multiplicacion</title>
+  <style>
+    /* Estilos para los cuadros de las casillas */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: center;
+      padding: 8px;
+    }
+
+    /* Estilo para resaltar casilla al enfocar */
+    input[type="number"]:focus {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tabla de multiplicacion</h1>
+  <p>Es Largo o Corto: 
+    <select id="largoCorto" onchange="calcularTotal()">
+      <option value="largo">Largo</option>
+      <option value="corto">Corto</option>
+    </select>
+  </p>
+  <p>Grosor: <input type="number" id="grosor" onkeyup="checkEnter(event)" onchange="calcularTotal()"></p>
+  <table>
+    <thead>
+      <tr>
+        <th>PT</th>
+        <th>Piezas Totales</th>
+        <th>Suma total</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-cuerpo">
+      <!-- Aquí se generará la tabla dinámicamente -->
+    </tbody>
+  </table>
+  <p style="font-size: 18px;">Piezas totales: <span id="sumaCasilla2"></span></p>
+  <p style="font-size: 18px;">Suma total: <span id="sumaCasilla3" style="font-size: 18px;"></span></p>
+  <p style="font-size: 24px;">TABLAS TOTALES DE TARTAS: <span id="totalFinal"></span></p>
+  <button onclick="guardarTabla()">Guardar Tabla</button>
+  <button onclick="verResumen()">Ver Resumen</button>
+
+  <script>
+    function generarTabla() {
+      // ...
+    }
+
+    function calcularTabla() {
+      // ...
+    }
+
+    function calcularTotal() {
+      // ...
+    }
+
+    function checkEnter(event) {
+      // ...
+    }
+
+    function guardarTabla() {
+      // ...
+    }
+
+    function verResumen() {
+      window.open('resumen.html', '_blank');
+    }
+
+    generarTabla();
+  </script>
+</body>
+</html>
